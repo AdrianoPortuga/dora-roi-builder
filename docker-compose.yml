@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: dora-postgres
+    environment:
+      POSTGRES_USER: dora
+      POSTGRES_PASSWORD: dora
+      POSTGRES_DB: doradb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_dora:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dora -d doradb"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  adminer:
+    image: adminer
+    container_name: dora-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata_dora:

@@ -1,0 +1,5 @@
+@tailwind base; @tailwind components; @tailwind utilities;
+:root { --bg: #0f172a; }
+body { @apply bg-slate-900 text-slate-100; background: radial-gradient(120% 120% at -10% -30%, rgba(59,130,246,.18), transparent 55%), var(--bg); min-height: 100vh; }
+.container-app { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: 64px 1fr; grid-template-areas: "side top" "side main"; min-height: 100vh; }
+.sidebar { grid-area: side; } .topbar { grid-area: top; } .main { grid-area: main; }

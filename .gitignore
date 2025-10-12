@@ -1,0 +1,16 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+.venv/
+.env
+dev.db
+
+# Node/React
+dora-roi-builder-react/node_modules/
+dora-roi-builder-react/.env
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
