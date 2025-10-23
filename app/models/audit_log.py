@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, text
-from app.db import Base
+from app.database import Base
 
 class AuditLog(Base):
     __tablename__ = "auditlog"

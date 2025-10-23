@@ -1,39 +1,42 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import api from '../api/client'
+import { createContext, useContext, useEffect, useState } from "react";
+import api, { setToken } from "../api/client";
 
-const Ctx = createContext(null)
+const AuthContext = createContext(null);
+
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(localStorage.getItem('access_token') || '')
-  const [refresh, setRefresh] = useState(localStorage.getItem('refresh_token') || '')
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // Tenta restaurar sessão
   useEffect(() => {
-    if (token) {
-      api.setToken(token)
-      api.me().then(setUser).catch(() => {})
-    }
-  }, [token])
+    let mounted = true;
+    api.me()
+      .then((u) => mounted && setUser(u))
+      .catch(() => mounted && setUser(null))
+      .finally(() => mounted && setLoading(false));
+    return () => { mounted = false; };
+  }, []);
 
   const login = async (email, password) => {
-    setLoading(true); setError('')
-    try {
-      const res = await api.login(email, password)
-      setToken(res.access_token); localStorage.setItem('access_token', res.access_token)
-      if (res.refresh_token) { setRefresh(res.refresh_token); localStorage.setItem('refresh_token', res.refresh_token) }
-      api.setToken(res.access_token)
-      const me = await api.me(); setUser(me)
-      return true
-    } catch (e) {
-      setError(e?.response?.data?.detail || 'Falha no login'); return false
-    } finally { setLoading(false) }
-  }
+    const res = await api.login(email, password); // { access_token: ... }
+    setToken(res.access_token);
+    const me = await api.me();
+    setUser(me);
+    return me;
+  };
+
   const logout = () => {
-    setToken(''); setRefresh(''); setUser(null)
-    localStorage.removeItem('access_token'); localStorage.removeItem('refresh_token')
-  }
-  const value = useMemo(() => ({ token, refresh, user, loading, error, login, logout }), [token, refresh, user, loading, error])
-  return <Ctx.Provider value={value}>{children}</Ctx.Provider>
+    setToken(null);
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
-export function useAuth(){ return useContext(Ctx) }
+
+export function useAuth() {
+  return useContext(AuthContext);
+}

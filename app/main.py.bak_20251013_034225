@@ -1,0 +1,63 @@
+﻿# app/main.py (trecho da criação do app)
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
+
+from app.routers import auth, vendors
+
+app = FastAPI(
+    title="DORA RoI Builder API",
+    description=(
+        "📊 Plataforma de Gestão de Riscos e Fornecedores conforme o "
+        "**DORA (Digital Operational Resilience Act - EU 2022/2554)**.\n\n"
+        "🔐 **Módulos disponíveis:**\n"
+        "- Autenticação e Tokens JWT\n"
+        "- Cadastro e classificação de Fornecedores (Vendors)\n"
+        "- Registro de Logs e Auditoria\n"
+        "- Integração com front-end React\n\n"
+        "Desenvolvido por **Adriano Corrêa** e equipe Codestech 🚀\n\n"
+        "**Links úteis:**\n"
+        "[🌐 Codestech – Website](https://codestech.com.br)\n"
+        "[📬 Suporte por e-mail](mailto:adrianocorreainvest@gmail.com)\n"
+        "[🐙 Repositório GitHub](https://github.com/AdrianoPortuga/dora-roi-builder)\n"
+    ),
+    version="0.1.0",
+    contact={
+        "name": "Adriano Corrêa - Codestech",
+        "url":  "https://codestech.com.br",
+        "email": "adrianocorreainvest@gmail.com",
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+    docs_url="/docs",
+    redoc_url="/redoc",
+)
+
+# redirect /
+@app.get("/", include_in_schema=False)
+def redirect_to_docs():
+    return RedirectResponse(url="/docs")
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "*",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# health
+@app.get("/health", tags=["infra"])
+def health():
+    return {"status": "ok"}
+
+# routers
+app.include_router(auth.router,    prefix="/api/auth",    tags=["auth"])
+app.include_router(vendors.router, prefix="/api/vendors", tags=["vendors"])

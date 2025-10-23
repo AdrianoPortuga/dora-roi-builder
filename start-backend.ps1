@@ -1,15 +1,15 @@
-# start-backend.ps1
+# scripts\start-backend.ps1
 $ErrorActionPreference = "Stop"
 
-# 1) Ativa o venv
-& "$PSScriptRoot\.venv\Scripts\Activate.ps1"
+$root = "C:\dora-roi-builder"
+cd $root
 
-# 2) Garante que a pasta app é um package
-if (-not (Test-Path "$PSScriptRoot\app\__init__.py")) {
-  New-Item -ItemType File -Path "$PSScriptRoot\app\__init__.py" -Force | Out-Null
-  Write-Host "Criado: app\__init__.py"
-}
+# ativa venv
+& .\.venv\Scripts\Activate.ps1
 
-# 3) Sobe o Uvicorn (módulo app.main:app)
-Set-Location $PSScriptRoot
+# (opcional) variáveis de ambiente do backend
+$env:APP_VERSION = "0.1.0"
+$env:APP_ENV = "local"
+
+# sobe o uvicorn
 python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000

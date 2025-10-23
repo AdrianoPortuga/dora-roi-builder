@@ -26,14 +26,25 @@ npm run dev
 Abra http://localhost:5173
 
 ## Estrutura
-- `src/api/client.js` — axios + interceptador de Bearer token
-- `src/context/AuthContext.jsx` — guarda token, usuário e faz login/me
+- `src/api/client.js` — axios + Bearer token
+- `src/context/AuthContext.jsx` — sessão, login e me
+- `src/layouts/PageShell.jsx` — shell + Header + Toaster
+- `src/components/Header.jsx` — marca, navegação e usuário
+- `src/components/ToastProvider.jsx` — toasts (sucesso/erro)
+- `src/components/ConfirmDialog.jsx` — confirmação genérica
+- `src/components/ui/*` — Button, Input, Select, Card, Table
 - `src/pages/Login.jsx` — tela de login
-- `src/pages/Vendors.jsx` — listagem, criação, edição e exclusão
-- `src/App.jsx` — rotas e layout
+- `src/pages/Vendors.jsx` — CRUD com dialogs e toasts
 
-## Ajustes
-- Se sua API retorna outra estrutura (ex.: `{items: [...]}`), o componente Vendors já tenta normalizar (`results/items/array`).
-- Para Refresh Token, você pode adicionar um interceptor 401 para tentar `/api/auth/refresh` antes do logout.
+## Variáveis .env do front
+Use `VITE_API_BASE` para apontar a API, ex.:
+
+```
+VITE_API_BASE=http://127.0.0.1:8000/api/v1
+```
+
+## Observações
+- Sem dependências externas de UI (shadcn/lucide), apenas Tailwind.
+- Para Refresh Token, adicione um interceptor 401 que chame `/auth/refresh` (se disponível) antes do logout.
 
 Feito para Adriano (Codestech Ltda).

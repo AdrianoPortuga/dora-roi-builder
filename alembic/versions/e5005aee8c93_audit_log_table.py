@@ -1,4 +1,4 @@
-"""audit log table
+﻿"""audit log table
 
 Revision ID: e5005aee8c93
 Revises: 1287500721fd
