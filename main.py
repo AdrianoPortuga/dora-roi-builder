@@ -1,52 +1,93 @@
-﻿from fastapi import FastAPI
+﻿
+# main.py — DORA RoI Builder
 
-from .config import settings
-from .models.base import Base
-from .models.organization import Organization  # noqa
-from .models.user import User  # noqa
-from .models.role import Role, RolePermission, UserRole  # noqa
-from .models.vendor import Vendor  # noqa
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from .database import engine
-from .routers.auth import router as auth_router
-from .routers.vendors import router as vendors_router
+# ==== Config / DB ====
+from app.config import settings
+from app.database import engine
+from app.models.base import Base
 
-# >>> middleware de auditoria
-from .middleware.audit import AuditMiddleware
+# importe TODOS os modelos que precisam existir nas tabelas
+from app.models.organization import Organization  # noqa
+from app.models.user import User  # noqa
+from app.models.role import Role, RolePermission, UserRole  # noqa
+from app.models.vendor import Vendor  # noqa
+from app.models.audit import AuditLog  # noqa  <-- necessário para criar a tabela auditlog
 
-def create_app():
-    app = FastAPI(title="DORA RoI Builder API", version="0.1.0")
-    @app.get("/health")
-    def health():
-        return {"status": "ok"}
-    return app
+# routers e middleware
+from app.routers.auth import router as auth_router
+from app.routers.vendors import router as vendors_router
+from app.middleware.audit import AuditMiddleware
 
-# Exemplo simples (pode manter se ainda não tem nada):
-app = FastAPI(title="DORA RoI Builder API", version="0.1.0")
 
+# --- DEBUG de persistência ---
+import os, pathlib
+print(f"[DB-DEBUG] DATABASE_URL em uso: {settings.database_url}")
+if settings.database_url.startswith("sqlite"):
+    path = settings.database_url.split("sqlite:///")[-1].lstrip("/")
+    print(f"[DB-DEBUG] Arquivo SQLite (aprox.): {path}")
+    print(f"[DB-DEBUG] Existe? {os.path.exists(path)}  |  Absoluto? {pathlib.Path(path).is_absolute()}")
+# --- fim do DEBUG ---
+
+# ==== FastAPI app (uma única instância) ====
+app = FastAPI(
+    title=getattr(settings, "project_name", "DORA RoI Builder API"),
+    version=getattr(settings, "version", "0.2"),
+    swagger_ui_parameters={"persistAuthorization": True},
+)
+
+# ==== CORS (atenção: parênteses fechados) ====
+origins = [
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+    "http://127.0.0.1:3000",
+    "http://localhost:3000",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Healthcheck
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-app = FastAPI(
-    title=settings.project_name,
-    swagger_ui_parameters={"persistAuthorization": True},
-)
-
-# Em SQLite cria tabelas automaticamente; em Postgres usamos Alembic
+# Em SQLite cria tabelas automaticamente; em Postgres usar Alembic
 if settings.database_url.startswith("sqlite"):
     Base.metadata.create_all(bind=engine)
 
-# >>> REGISTRA o middleware (linha essencial!)
+# Middleware de auditoria (depois do create_all tudo já existe)
 app.add_middleware(AuditMiddleware)
 
-# opcional: mostrar a pilha de middlewares no boot
-print("[BOOT] user_middleware =", app.user_middleware)
-
-# Routers
-app.include_router(auth_router, prefix=settings.api_v1_prefix)
-app.include_router(vendors_router, prefix=settings.api_v1_prefix)
+# Prefixo (garante alinhamento com o front)
+api_prefix = getattr(settings, "api_v1_prefix", "/api/v1")
+app.include_router(auth_router, prefix=api_prefix)
+app.include_router(vendors_router, prefix=api_prefix)
 
 @app.get("/")
 def root():
-    return {"ok": True, "service": settings.project_name}
+    return {"ok": True, "service": getattr(settings, "project_name", "DORA RoI Builder")}
+
+#| Set-Content -Path C:\dora-roi-builder\main.py -Encoding UTF8
+# === CORS habilitado para o front em 5173 ===
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5173","http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# === CORS habilitado para o front em 5173 ===
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5173","http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

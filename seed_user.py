@@ -1,4 +1,4 @@
-from passlib.hash import pbkdf2_sha256
+﻿from passlib.hash import pbkdf2_sha256
 from sqlalchemy.orm import Session
 from app.database import engine, SessionLocal
 from app.models.base import Base
@@ -22,7 +22,7 @@ def upsert_role(db: Session, org_id: int, name: str, perms: list[str]) -> Role:
     if not role:
         role = Role(organization_id=org_id, name=name)
         db.add(role); db.flush()
-    # sincroniza permissões
+    # sincroniza permissÃµes
     existing = {rp.permission for rp in db.query(RolePermission).filter(RolePermission.role_id==role.id).all()}
     for p in perms:
         if p not in existing:
@@ -64,12 +64,12 @@ def run():
             db.commit()
             print(">> Updated admin password (PBKDF2)")
 
-        # cria papéis e vincula
+        # cria papÃ©is e vincula
         admin_role = upsert_role(db, org.id, "admin", ADMIN_PERMS)
         viewer_role = upsert_role(db, org.id, "viewer", VIEWER_PERMS)
         ensure_user_role(db, admin.id, admin_role.id)
 
-        # um usuário viewer para testar 403
+        # um usuÃ¡rio viewer para testar 403
         viewer = db.query(User).filter(User.email=="viewer@demo.com").first()
         if not viewer:
             viewer = User(

@@ -1,4 +1,4 @@
-"""sync schema
+﻿"""sync schema
 
 Revision ID: 1287500721fd
 Revises: 16a4dd8c083a

@@ -1,4 +1,4 @@
-from app.database import SessionLocal, init_db
+﻿from app.database import SessionLocal, init_db
 from app import models
 from app.security import hash_password
 from app.config import settings

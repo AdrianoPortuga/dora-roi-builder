@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+﻿from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .database import get_db
@@ -7,7 +7,7 @@ from .models.role import Role, RolePermission, UserRole
 from .models.user import User
 
 def _fetch_user_permissions(user: User, db: Session) -> set[str]:
-    # checa se usuário tem papel "admin"
+    # checa se usuÃ¡rio tem papel "admin"
     is_admin = db.query(Role).join(UserRole, UserRole.role_id == Role.id)\
         .filter(UserRole.user_id == user.id, Role.name == "admin").first() is not None
     if is_admin:

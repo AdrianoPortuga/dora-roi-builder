@@ -31,10 +31,10 @@ export const api = {
   me: async () => (await instance.get("/auth/me")).data,
 
   // Vendors (CRUD)
-  listVendors: async () => (await instance.get("/")).data,
-  createVendor: async (payload) => (await instance.post("/", payload)).data,
-  updateVendor: async (id, payload) => (await instance.put(`/${id}`, payload)).data,
-  deleteVendor: async (id) => (await instance.delete(`/${id}`)).data,
+  listVendors: async () => (await instance.get("/vendors")).data,
+  createVendor: async (payload) => (await instance.post("/vendors", payload)).data,
+  updateVendor: async (id, payload) => (await instance.put(`/vendors/${id}`, payload)).data,
+  deleteVendor: async (id) => (await instance.delete(`/vendors/${id}`)).data,
 };
 
 export { instance as http, setToken };

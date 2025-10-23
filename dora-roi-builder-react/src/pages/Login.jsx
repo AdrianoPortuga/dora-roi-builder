@@ -1,5 +1,6 @@
 ﻿import { useState } from "react";
 import { api } from "../api/client";
+import { setToken } from "../api/client";
 
 export default function Login() {
   const [email, setEmail] = useState("admin@demo.com");
@@ -15,8 +16,8 @@ export default function Login() {
       const r = await api.login(email, password); // { access_token, token_type }
       if (!r?.access_token) throw new Error("Sem token");
 
-      // grava e redireciona
-      localStorage.setItem("dora_token", r.access_token);
+      // grava token no axios e localStorage e redireciona
+      setToken(r.access_token);
       window.location.href = "/vendors";
     } catch (err) {
       console.error(err);

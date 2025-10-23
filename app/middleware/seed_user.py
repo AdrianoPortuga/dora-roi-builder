@@ -1,4 +1,4 @@
-from passlib.hash import argon2
+﻿from passlib.hash import argon2
 from sqlalchemy.orm import Session
 from app.database import engine, SessionLocal
 from app.models.base import Base

@@ -1,3 +1,4 @@
+﻿from app.config import settings
 # app/core/security.py
 import os
 from datetime import datetime, timedelta, timezone
@@ -15,7 +16,7 @@ ACCESS_EXPIRE_MIN = int(os.getenv("ACCESS_EXPIRE_MIN", "60"))
 REFRESH_EXPIRE_MIN = int(os.getenv("REFRESH_EXPIRE_MIN", "10080"))       # 7 dias
 
 # Swagger/Authorize usará este endpoint:
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.api_v1_prefix}/auth/token")
 
 def _create_token(data: Dict[str, Any], minutes: int, secret: str) -> str:
     to_encode = data.copy()
@@ -43,3 +44,5 @@ def decode_refresh_token(token: str) -> Dict[str, Any]:
 def get_current_user(payload: Dict[str, Any] = Depends(lambda token=Depends(oauth2_scheme): decode_access_token(token))):
     # Retorna um dicionário simples do usuário (ajuste para seu modelo real)
     return {"email": payload.get("sub")}
+
+

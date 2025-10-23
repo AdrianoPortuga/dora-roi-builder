@@ -1,8 +1,8 @@
-# app/main.py — MODO SEGURO (sem AuditMiddleware)
+﻿# app/main.py â€” MODO SEGURO (sem AuditMiddleware)
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# 👉 tente importar seus routers reais (ajuste os caminhos se necessário)
+# ðŸ‘‰ tente importar seus routers reais (ajuste os caminhos se necessÃ¡rio)
 #   Estruturas comuns: app.routers, app.api, app.routes
 routers = {}
 for mod in ("app.routers.auth", "app.api.auth", "app.routes.auth"):
@@ -49,5 +49,5 @@ if "auth" in routers:
 if "vendors" in routers:
     app.include_router(routers["vendors"], prefix="/api/vendors", tags=["vendors"])
 
-# 👉 Se os seus routers reais não forem encontrados,
-#    você ainda terá /health e /docs funcionando.
+# ðŸ‘‰ Se os seus routers reais nÃ£o forem encontrados,
+#    vocÃª ainda terÃ¡ /health e /docs funcionando.
