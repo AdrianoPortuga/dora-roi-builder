@@ -1,0 +1,7 @@
+﻿# Padroniza textos como LF no repositório (independente do SO)
+* text=auto eol=lf
+
+# Mantém arquivos binários como estão
+*.png binary
+*.jpg binary
+*.ico binary
