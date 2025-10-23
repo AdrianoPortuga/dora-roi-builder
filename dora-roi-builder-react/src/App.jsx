@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, Link } from 'react-router-dom'
+﻿import { Routes, Route, Navigate, Link } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Login from './pages/Login'
 import Vendors from './pages/Vendors'
@@ -18,8 +18,8 @@ function Layout({ children }) {
       <nav className="space-y-1 text-slate-200">
         <Link className="block px-3 py-2 rounded hover:bg-slate-800" to="/vendors">Vendors</Link>
         <span className="block px-3 py-2 rounded opacity-60">Riscos (em breve)</span>
-        <span className="block px-3 py-2 rounded opacity-60">Evidências (em breve)</span>
-        <span className="block px-3 py-2 rounded opacity-60">Relatórios (em breve)</span>
+        <span className="block px-3 py-2 rounded opacity-60">EvidÃªncias (em breve)</span>
+        <span className="block px-3 py-2 rounded opacity-60">RelatÃ³rios (em breve)</span>
       </nav>
     </aside>
     <header className="topbar flex items-center justify-between px-4 border-b border-slate-800 backdrop-blur bg-slate-900/50">
